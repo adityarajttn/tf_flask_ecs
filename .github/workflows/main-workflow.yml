@@ -21,7 +21,7 @@ on:
       repository_name:
         description: 'ECR name'
         required: false
-        default: "aws_lambda_cicd"
+        default: "aws_ecs_flask"
 
 jobs:
   terraform:

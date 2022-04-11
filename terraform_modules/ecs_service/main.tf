@@ -2,6 +2,11 @@ data "aws_ecr_repository" "ecr_repository" {
   name = var.ecr_repository_name
 }
 
+data "aws_ecr_image" "image_digest" {
+  repository_name = var.ecr_repository_name
+  image_tag       = "${var.app_image_tag}"
+}
+
 resource "aws_ecs_cluster" "main" {
   name = "flask_cluster"
 }
@@ -16,7 +21,7 @@ resource "aws_ecs_task_definition" "app" {
   container_definitions = jsonencode([
     {
       name      = "first"
-      image     = "${data.aws_ecr_repository.ecr_repository.repository_url}:${var.app_image_tag}"
+      image     = "${data.aws_ecr_repository.ecr_repository.repository_url}@${data.aws_ecr_image.image_digest.image_digest}"
       essential = true
       portMappings = [
         {

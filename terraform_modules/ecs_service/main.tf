@@ -30,7 +30,7 @@ resource "aws_ecs_task_definition" "app" {
 }
 
 resource "aws_ecs_service" "service" {
-  name            = "flask_service"
+  name            = var.ecr_repository_name
   network_configuration {
     subnets = ["subnet-0860e508a460a2165", "subnet-0e0ed15cbeac2634d", "subnet-00284896514456cf0"]
     assign_public_ip = true

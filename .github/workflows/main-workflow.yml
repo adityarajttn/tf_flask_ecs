@@ -25,7 +25,7 @@ on:
 
 jobs:
   terraform:
-    name: "Update Lambda function"
+    name: "Update ECS Service"
     runs-on: ubuntu-latest
     steps:
       - name: Checkout

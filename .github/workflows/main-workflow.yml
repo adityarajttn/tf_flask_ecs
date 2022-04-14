@@ -19,9 +19,24 @@ on:
         - v2
 
       repository_name:
-        description: 'ECR name'
+        description: 'App Name'
         required: false
         default: "aws_ecs_flask"
+
+      app_count:
+        description: 'Desired App Count'
+        required: false
+        default: "3"
+
+      fargate_cpu:
+        description: 'Farget CPU'
+        required: false
+        default: "2048"
+
+      fargate_memory:
+        description: 'Farget Memory'
+        required: false
+        default: "2048"
 
 jobs:
   terraform:
@@ -49,11 +64,17 @@ jobs:
           echo -e "repository_name = \"${REPOSITORY_NAME}\"\n" >> terraform.auto.tfvars
           echo -e "image_tag = \"${IMAGE_TAG}\"\n" >> terraform.auto.tfvars
           echo -e "region = \"${AWS_REGION}\"\n" >> terraform.auto.tfvars
+          echo -e "app_count = \"${APP_COUNT}\"\n" >> terraform.auto.tfvars
+          echo -e "fargate_cpu = \"${FARGET_CPU}\"\n" >> terraform.auto.tfvars
+          echo -e "fargate_memory = \"${FARGET_MEMORY}\"\n" >> terraform.auto.tfvars
           terraform init
         env:
           REPOSITORY_NAME: ${{ github.event.inputs.repository_name }}
           IMAGE_TAG: ${{ github.event.inputs.image_tag }}
           AWS_REGION: ${{ github.event.inputs.reason }}
+          APP_COUNT: ${{ github.event.inputs.app_count }}
+          FARGET_CPU: ${{ github.event.inputs.fargate_cpu }}
+          FARGET_MEMORY: ${{ github.event.inputs.fargate_memory }}
 
       - name: Terraform Plan
         id: plan

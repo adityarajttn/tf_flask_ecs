@@ -8,7 +8,7 @@ data "aws_ecr_image" "image_digest" {
 }
 
 resource "aws_ecs_cluster" "main" {
-  name = "flask_cluster"
+  name = "${var.ecr_repository_name}-cluster"
 }
 
 resource "aws_ecs_task_definition" "app" {
@@ -20,7 +20,7 @@ resource "aws_ecs_task_definition" "app" {
   memory                   = var.fargate_memory
   container_definitions = jsonencode([
     {
-      name      = "first"
+      name      = "${var.ecr_repository_name}-container"
       image     = "${data.aws_ecr_repository.ecr_repository.repository_url}@${data.aws_ecr_image.image_digest.image_digest}"
       essential = true
       portMappings = [
@@ -35,13 +35,25 @@ resource "aws_ecs_task_definition" "app" {
 }
 
 resource "aws_ecs_service" "service" {
-  name            = var.ecr_repository_name
-  network_configuration {
-    subnets = ["subnet-0860e508a460a2165", "subnet-0e0ed15cbeac2634d", "subnet-00284896514456cf0"]
-    assign_public_ip = true
-  }
+  name            = "${var.ecr_repository_name}-service"
   cluster         = aws_ecs_cluster.main.id
   task_definition = aws_ecs_task_definition.app.arn
   desired_count   = var.app_count
   launch_type     = "FARGATE"
+
+  network_configuration {
+   security_groups  = var.ecs_service_security_groups
+   subnets          = var.subnets.*.id
+   assign_public_ip = true
+ }
+ 
+ load_balancer {
+   target_group_arn = var.aws_alb_target_group_arn
+   container_name   = "${var.ecr_repository_name}-container"
+   container_port   = var.app_port
+ }
+ 
+ lifecycle {
+   ignore_changes = [task_definition, desired_count]
+ }
 }

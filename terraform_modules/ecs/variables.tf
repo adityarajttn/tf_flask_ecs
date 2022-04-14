@@ -32,3 +32,15 @@ variable "app_count" {
   description = "Number of docker containers to run"
   default     = 3
 }
+
+variable "subnets" {
+  description = "List of subnet IDs"
+}
+
+variable "ecs_service_security_groups" {
+  description = "Comma separated list of security groups"
+}
+
+variable "aws_alb_target_group_arn" {
+  description = "ARN of the alb target group"
+}

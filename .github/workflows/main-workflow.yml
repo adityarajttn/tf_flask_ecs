@@ -7,8 +7,8 @@ on:
         type: choice
         description: Choose Event
         options:
-        - Provision Infrastructure
         - Code Delivery
+        - Provision Infrastructure
 
       reason:
         type: choice

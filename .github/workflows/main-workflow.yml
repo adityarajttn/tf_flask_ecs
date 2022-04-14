@@ -31,7 +31,7 @@ on:
       fargate_cpu:
         description: 'Farget CPU'
         required: false
-        default: "2048"
+        default: "1024"
 
       fargate_memory:
         description: 'Farget Memory'
